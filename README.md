@@ -1,2 +1,0 @@
-# BillTrackerApp
-Created with CodeSandbox
