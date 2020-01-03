@@ -14,6 +14,17 @@ function App() {
   const [shouldShowAddBill, setShouldShowAddBill] = useState(false);
   const [categories, setCategories] = useState([]);
   const [bills, setBills] = useState([]);
+  const [activeCategory, setActiveCategory] = useState();
+
+  const activeBills = () => {
+    return bills
+      .filter(bill =>
+        activeCategory !== undefined
+          ? categories.indexOf(bill.category) === activeCategory
+          : true
+      )
+      .sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
+  };
 
   const addCategory = category => {
     const updatedCategories = [...(categories || []), category];
@@ -40,7 +51,7 @@ function App() {
 
     const billsInLocalStorage = JSON.parse(localStorage.getItem("bills"));
     console.log("billsInLocalStorage " + localStorage.getItem("bills"));
-    console.log("billsInLocalStorage " + billsInLocalStorage);
+
     setBills(billsInLocalStorage);
 
     if (!categoriesInLocalStorage) {
@@ -67,6 +78,10 @@ function App() {
     setBills(updatedBills);
     localStorage.setItem("bills", JSON.stringify(updatedBills));
   };
+  const setNewActiveCategory = index => {
+    setActiveCategory(index);
+    console.log("setActiveCategory " + index);
+  };
 
   return (
     <div className="App">
@@ -76,17 +91,22 @@ function App() {
         <AddBill onSubmit={addBill} categories={categories} />
       ) : (
         <div>
-          <NavBar categories={categories} showAddCategory={showAddCategory} />
+          <NavBar
+            categories={categories}
+            showAddCategory={showAddCategory}
+            activeCategory={activeCategory}
+            setNewActiveCategory={setNewActiveCategory}
+          />
           <div className="container flex">
             <div className="w-1/2">
               <BillsTable
-                bills={bills}
+                bills={activeBills()}
                 showAddBill={showAddBill}
                 removeBill={removeBill}
               />
             </div>
             <div className="w-1/2">
-              <Chart bills={bills} />
+              <Chart bills={activeBills()} />
             </div>
           </div>
         </div>
