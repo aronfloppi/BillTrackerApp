@@ -11,7 +11,9 @@ import BillsTable from "./components/BillsTable.js";
 
 function App() {
   const [shouldShowAddCategory, setShouldShowAddCategory] = useState(false);
+  const [shouldShowAddBill, setShouldShowAddBill] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [bills, setBills] = useState([]);
 
   const addCategory = category => {
     const updatedCategories = [...(categories || []), category];
@@ -22,12 +24,23 @@ function App() {
     console.log("categories " + categories);
   };
 
+  const addBill = (amount, category, date) => {
+    const bill = { amount, category, date };
+    const updatedBills = [...(bills || []), bill];
+    setBills(updatedBills);
+    setShouldShowAddBill(false);
+    localStorage.setItem("bills", JSON.stringify(updatedBills));
+  };
+
   useEffect(() => {
     let categoriesInLocalStorage = JSON.parse(
       localStorage.key("categories") ? localStorage.getItem("categories") : []
     );
-
     console.log("categoriesInLocalStorage " + categoriesInLocalStorage);
+
+    const billsInLocalStorage = JSON.parse(localStorage.getItem("bills"));
+    setBills(billsInLocalStorage);
+
     if (!categoriesInLocalStorage) {
       setShouldShowAddCategory(true);
     } else {
@@ -44,6 +57,8 @@ function App() {
     <div className="App">
       {shouldShowAddCategory ? (
         <AddCategory onSubmit={addCategory} />
+      ) : shouldShowAddBill ? (
+        <AddBill onSubmit={addBill} categories={categories} />
       ) : (
         <div>
           <NavBar categories={categories} showAddCategory={showAddCategory} />
