@@ -39,6 +39,8 @@ function App() {
     console.log("categoriesInLocalStorage " + categoriesInLocalStorage);
 
     const billsInLocalStorage = JSON.parse(localStorage.getItem("bills"));
+    console.log("billsInLocalStorage " + localStorage.getItem("bills"));
+    console.log("billsInLocalStorage " + billsInLocalStorage);
     setBills(billsInLocalStorage);
 
     if (!categoriesInLocalStorage) {
@@ -53,6 +55,10 @@ function App() {
     setShouldShowAddCategory(true);
   };
 
+  const showAddBill = () => {
+    setShouldShowAddBill(true);
+  };
+
   return (
     <div className="App">
       {shouldShowAddCategory ? (
@@ -64,7 +70,7 @@ function App() {
           <NavBar categories={categories} showAddCategory={showAddCategory} />
           <div className="container flex">
             <div className="w-1/2">
-              <BillsTable />
+              <BillsTable bills={bills} showAddBill={showAddBill} />
             </div>
             <div className="w-1/2">
               <Chart />
