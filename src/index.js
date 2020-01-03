@@ -11,7 +11,7 @@ import BillsTable from "./components/BillsTable.js";
 
 function App() {
   const [shouldShowAddCategory, setShouldShowAddCategory] = useState(false);
-  const [shouldShowAddBill, setShouldShowAddBill] = useState(true);
+  const [shouldShowAddBill, setShouldShowAddBill] = useState(false);
   const [categories, setCategories] = useState([]);
   const [bills, setBills] = useState([]);
 
@@ -59,6 +59,15 @@ function App() {
     setShouldShowAddBill(true);
   };
 
+  const removeBill = index => {
+    let updatedBills = [...bills];
+    updatedBills = updatedBills
+      .slice(0, index)
+      .concat(updatedBills.slice(index + 1, updatedBills.length));
+    setBills(updatedBills);
+    localStorage.setItem("bills", JSON.stringify(updatedBills));
+  };
+
   return (
     <div className="App">
       {shouldShowAddCategory ? (
@@ -70,10 +79,14 @@ function App() {
           <NavBar categories={categories} showAddCategory={showAddCategory} />
           <div className="container flex">
             <div className="w-1/2">
-              <BillsTable bills={bills} showAddBill={showAddBill} />
+              <BillsTable
+                bills={bills}
+                showAddBill={showAddBill}
+                removeBill={removeBill}
+              />
             </div>
             <div className="w-1/2">
-              <Chart />
+              <Chart bills={bills} />
             </div>
           </div>
         </div>
